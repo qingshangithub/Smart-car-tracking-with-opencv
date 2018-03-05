@@ -1,0 +1,79 @@
+#! /usr/bin/python3
+# -*- coding: utf-8 -*-
+import pyximport
+pyximport.install()
+
+from motor import left_motor, right_motor
+from flask import Flask, request, Response
+from speedsensor import left_speed, right_speed
+import socket
+import struct
+import sys
+
+"""
+app = Flask(__name__)
+
+
+@app.route('/ChangeSpeed', methods=['POST'])
+def change_speed():
+    data = request.get_json(force=True)
+    name = data['name']
+    speed = int(data['speed'])
+    if name == 'left':
+        # left_motor.change_speed(speed)
+        pass
+    else:
+        # right_motor.change_speed(speed)
+        pass
+    return '1'
+
+
+@app.route('/Stop', methods=['POST'])
+def stop():
+    data = request.get_json(force=True)
+    name = data['name']
+    speed = data['speed']
+    if name == 'left':
+    #   left_motor.stop()
+        pass
+    else:
+       #  right_motor.stop()
+        pass
+    return '1'
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True, use_reloader = True)
+"""
+
+
+def session(cli, add):
+    unpacker = struct.Struct('1s f')
+    packer = struct.Struct('f f')
+    while True:
+        try:
+            command_raw = cli.recv(512)
+            name, speed = unpacker.unpack(command_raw)
+            if name == b'l':
+                left_motor.change_speed(speed)
+            elif name == b'r':
+                right_motor.change_speed(speed)
+            elif name == b'g':    
+                cli.sendall(packer.pack(left_speed.value, right_speed.value))
+        except RuntimeError as e:
+            s.close()
+        
+
+
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+try:
+    s.bind(('0.0.0.0', 5000))
+    print('Binded')
+except socket.error as meg:
+    print('Bind failed ')
+    sys.exit()
+s.listen(2)
+while True:
+    client, address = s.accept()
+    print('Connected to client')
+    session(client, address)

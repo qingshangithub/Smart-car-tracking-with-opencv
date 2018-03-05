@@ -1,0 +1,15 @@
+﻿  main.cpp
+d:\users\qingshan\documents\visual studio 2015\projects\qingshan\qingshan\variable.h(15): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+d:\users\qingshan\documents\visual studio 2015\projects\qingshan\qingshan\mouse.h(7): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+d:\users\qingshan\documents\visual studio 2015\projects\qingshan\qingshan\mouse.h(12): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+d:\users\qingshan\documents\visual studio 2015\projects\qingshan\qingshan\hough.h(14): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+d:\users\qingshan\documents\visual studio 2015\projects\qingshan\qingshan\hough.h(15): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据
+d:\users\qingshan\documents\visual studio 2015\projects\qingshan\qingshan\hough.h(23): warning C4018: “<”: 有符号/无符号不匹配
+d:\users\qingshan\documents\visual studio 2015\projects\qingshan\qingshan\carmove.h(22): warning C4018: “<”: 有符号/无符号不匹配
+d:\users\qingshan\documents\visual studio 2015\projects\qingshan\qingshan\carmove.h(18): warning C4101: “th”: 未引用的局部变量
+  正在生成代码
+  1 of 368 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  qingshan.vcxproj -> D:\Users\qingshan\documents\visual studio 2015\Projects\qingshan\Release\qingshan.exe

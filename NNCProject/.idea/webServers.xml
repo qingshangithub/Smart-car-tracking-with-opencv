@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="ba99c331-50d1-49f5-a965-5b6c81e3b88d" name="NNCProject" url="http://localhost">
+        <fileTransfer port="0" mountedRoot="F:\MyDocuments\OneDrive\Documents" accessType="MOUNT" />
+      </webServer>
+    </option>
+  </component>
+</project>

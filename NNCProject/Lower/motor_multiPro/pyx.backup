@@ -1,0 +1,96 @@
+#! /usr/bin/python3
+# -*- coding: utf-8 -*-
+import pigpio
+from time import sleep
+from threading import Thread
+from multiprocessing import Value
+from speedsensor import left_speed, right_speed
+
+
+ctypedef float (*s_func_ptr) (object)
+ctypedef void (*ups_func_ptr) (object, float)
+ctypedef float(*get_sp_func_ptr) (object)
+
+# cpdef void __pid_adjust(object motor, get_sp_func_ptr ts, s_func_ptr s_func, ups_func_ptr ups_func):
+cpdef void __pid_adjust(object motor, object ts, object s_func, object ups_func):
+    cdef float set_point = ts(motor)
+    cdef float previous_error = 0
+    cdef float integral = 0
+    cdef int dt = 5 # millisecond
+    cdef float error= 0
+    cdef float out_put
+    while True:
+        error = set_point - s_func(motor)
+        integral += error * dt
+        derivative = (error - previous_error) / dt
+        out_put = 1 * error + 1 * integral + 1 * derivative
+        previous_error = error
+        ups_func(motor,out_put)
+        sleep(dt)
+
+
+class Motor(object):
+    __slots__ = ('__gpio', '__PWM', '__posi', '__nega',
+                 'target_speed', '__pid_thread', 'speed_sensor')
+
+    def __init__(self, posit, negat, pwm, ss_bind):
+        self.__gpio = pigpio.pi()
+        self.__PWM = pwm
+        self.__posi = posit
+        self.__nega = negat
+        self.__target_speed = 0.0
+        self.speed_sensor = ss_bind
+        g = self.__gpio
+        g.set_mode(pwm, pigpio.OUTPUT)  # PWM
+        g.set_mode(negat, pigpio.OUTPUT)  # negative
+        g.set_mode(posit, pigpio.OUTPUT)  # positive
+        g.write(negat, 0)
+        g.write(posit, 0)
+        self.__pid_thread = Thread(target=__pid_adjust, args=(self, self.__get_set_point, self.__get_speed, self. __update_pwm))
+        self.__pid_thread.start()
+
+    def __get_speed(self):
+        return self.speed_sensor.value
+
+    def  __update_pwm(self,  s):
+        pwm = int( s * 255)
+        self.__gpio.set_PWM_dutycycle(self.__PWM, pwm)
+
+    def __get_set_point(self):
+        return self.__target_speed
+
+    def change_speed(self, speed):
+        speed = int(speed*255)
+        g = self.__gpio
+        if speed > 0:
+            # g.set_PWM_dutycycle(self.__PWM, speed)
+            g.write(self.__posi, 1)
+            g.write(self.__nega, 0)
+            self.__pid_thread.terminate()
+            self.__target_speed = speed
+            self.__pid_thread.start()
+        elif speed < 0:
+            # g.set_PWM_dutycycle(self.__PWM, abs(speed))
+            g.write(self.__posi, 0)
+            g.write(self.__nega, 1)
+            self.__pid_thread.terminate()
+            self.__target_speed = speed
+            self.__pid_thread.start()
+
+        else:
+            g.write(self.__posi, 0)
+            g.write(self.__nega, 0)
+
+
+
+    def run(self, speed):
+        self.change_speed(speed)
+
+    def stop(self):
+        g = self.__gpio
+        g.write(self.__posi, 0)
+        g.write(self.__nega, 0)
+
+
+left_motor = Motor(19, 26, 6, left_speed)
+right_motor = Motor(20, 16, 12, right_speed)

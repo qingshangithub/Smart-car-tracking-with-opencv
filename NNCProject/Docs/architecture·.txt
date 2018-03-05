@@ -1,0 +1,26 @@
+Upper
+    UI: (MVC)
+        container: electron
+        language: html + css + js
+        
+    server:
+        UI interface:
+        
+        lower interface:
+        
+        trainging module:
+        
+        database interface:
+        
+lower:
+    server interface:
+        http request
+    image capture:
+    
+    computing module:
+    
+    hardware interface:
+    
+    
+        
+    
